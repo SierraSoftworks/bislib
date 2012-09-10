@@ -255,10 +255,15 @@ namespace BISLib
 
                     _combinedOperations.IsGamePresent = launch =>
                     {
-                        string exePath = _combinedOperations.ExecutableFile(launch);
-                        if (exePath != null && File.Exists(exePath))
-                            return true;
-                        return false;
+                        string exePath = OperationArrowhead.ExecutableFile(launch);
+                        if (exePath == null || !File.Exists(exePath))
+                            return false;
+
+                        exePath = ArmA2.ExecutableFile(launch);
+                        if (exePath == null || !File.Exists(exePath))
+                            return false;
+
+                        return true;
                     };
 
                     _combinedOperations.EquivalentLaunch = launch =>
@@ -454,9 +459,10 @@ namespace BISLib
                     _tkoh_rearmed.IsGamePresent = launch =>
                     {
                         string exePath = _tkoh_rearmed.ExecutableFile(launch);
-                        if (exePath != null && File.Exists(exePath))
-                            return true;
-                        return false;
+                        if (exePath == null || !File.Exists(exePath))
+                            return false;
+
+                        return CombinedOperations.IsGamePresent(launch);
                     };
 
                     _tkoh_rearmed.EquivalentLaunch = launch =>
