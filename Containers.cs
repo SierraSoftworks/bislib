@@ -6,30 +6,83 @@ using System.Text.RegularExpressions;
 
 namespace BISLib
 {
+    /// <summary>
+    /// Describes the result of a launch operation
+    /// </summary>
     public enum LaunchResults
     {
+        /// <summary>
+        /// The game was launched successfully
+        /// </summary>
         Success,
+
+        /// <summary>
+        /// The game failed to launch successfully
+        /// </summary>
         Failure
     }
 
+    /// <summary>
+    /// The type of launch operation to be performed
+    /// </summary>
     public enum LaunchTypes
     {
+        /// <summary>
+        /// The game will launch through Steam if it is installed
+        /// </summary>
         Steam,
+
+        /// <summary>
+        /// The game will be run in Release mode
+        /// </summary>
         Release,
+
+        /// <summary>
+        /// The game will be run in Beta mode (if a beta version is installed)
+        /// </summary>
         Beta,
+        
+        /// <summary>
+        /// The latest version of the game will be launched (Beta or Release)
+        /// </summary>
         Latest
     }
 
+    /// <summary>
+    /// Determines the type of engine used to select mods for
+    /// a certain <see cref="ModSelector"/>
+    /// </summary>
     public enum SelectionEngines
     {
+        /// <summary>
+        /// A function will be used to select mods
+        /// </summary>
         Function,
+        
+        /// <summary>
+        /// Only mods whose names exactly match the given values will be selected
+        /// </summary>
         Exact,
+
+        /// <summary>
+        /// Uses a wildcard selection algorithm to match the mod names
+        /// </summary>
         Wildcard,
+
+        /// <summary>
+        /// Uses a regular expression selection algorithm to match the mod names
+        /// </summary>
         RegularExpressions
     }
 
+    /// <summary>
+    /// Describes a set of options to be used for launching a game
+    /// </summary>
     public class LaunchParameters
     {
+        /// <summary>
+        /// Creates a new game launch parameters instance
+        /// </summary>
         public LaunchParameters()
         {
             Game = Game.ArmA2;
@@ -40,30 +93,52 @@ namespace BISLib
             Server = GameServer.Singleplayer;
         }
 
+        /// <summary>
+        /// Gets or Sets the game to launch
+        /// </summary>
         public Game Game
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or Sets the type of game to be launched
+        /// </summary>
         public LaunchTypes LaunchType
         { get; set; }
 
+        /// <summary>
+        /// Gets or Sets the list of <see cref="ModSelector"/>s
+        /// which will be used to select mods.
+        /// </summary>
         public List<ModSelector> ModSelectionFilters
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or Sets the list of additional arguments which will
+        /// be provided to the game's executable
+        /// </summary>
         public List<string> AdditionalArguments
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or Sets the list of additional mod directories which
+        /// will be searched
+        /// </summary>
         public List<string> AdditionalModDirectories
         { get; set; }
 
+        /// <summary>
+        /// Gets or Sets the <see cref="GameServer"/> which
+        /// will be joined when the game starts
+        /// </summary>
         public GameServer Server
         { get; set; }
 
@@ -110,9 +185,17 @@ namespace BISLib
     }
 
 
-
+    /// <summary>
+    /// Selects mods from a directory based on a set of selection criteria
+    /// </summary>
     public class ModSelector
     {
+        /// <summary>
+        /// Creates a <see cref="ModSelector"/> which uses a function to select mods
+        /// </summary>
+        /// <param name="matchEvaluator">
+        /// The function to use for selecting mods
+        /// </param>
         public ModSelector(Func<string, bool> matchEvaluator)
         {
             if (MatchEvaluator == null)
@@ -122,6 +205,22 @@ namespace BISLib
             MatchEvaluator = matchEvaluator;
         }
 
+        /// <summary>
+        /// Creates a <see cref="ModSelector"/> which uses the specified selection engine to
+        /// select mods.
+        /// </summary>
+        /// <param name="engine">
+        /// The engine to use for selecting mods
+        /// </param>
+        /// <param name="selector">
+        /// The selector string to use for this <see cref="ModSelector"/>
+        /// </param>
+        /// <param name="exclusion">
+        /// Whether or not this selector will act as an exclusion filter
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown if <see cref="SelectionEngines.Function"/> is selected for <paramref name="engine"/>
+        /// </exception>
         public ModSelector(SelectionEngines engine, string selector, bool exclusion)
         {
             if (engine == SelectionEngines.Function)
@@ -133,18 +232,32 @@ namespace BISLib
             MatchEvaluator = null;
         }
 
+        /// <summary>
+        /// The selection engine to use for matching mod names
+        /// to the <see cref="Selector"/>.
+        /// </summary>
         public SelectionEngines Engine
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// The selection filter to use for matching mod names
+        /// </summary>
         public string Selector
         { get; private set; }
 
+        /// <summary>
+        /// Whether or not this <see cref="ModSelector"/> will be
+        /// treated as an exclusion filter
+        /// </summary>
         public bool ExclusionFilter
         { get; set; }
 
+        /// <summary>
+        /// The function to use to determine whether or not to select a mod
+        /// </summary>
         public Func<string, bool> MatchEvaluator
         {
             get;
