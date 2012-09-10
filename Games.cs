@@ -46,8 +46,12 @@ namespace BISLib
                                 case LaunchTypes.Steam:
                                     return Path.Combine(SteamDirectory, "Steam.exe");
                                 case LaunchTypes.Release:
+                                    if (_arma2.InstallDirectory(launch) == null)
+                                        return null;
                                     return Path.Combine(_arma2.InstallDirectory(launch), "arma2.exe");
                                 case LaunchTypes.Beta:
+                                    if (_arma2.InstallDirectory(launch) == null)
+                                        return null;
                                     return Path.Combine(_arma2.InstallDirectory(launch), "beta", "arma2.exe");
                                 default: return null;
                             }
@@ -145,8 +149,12 @@ namespace BISLib
                             case LaunchTypes.Steam:
                                 return Path.Combine(SteamDirectory, "Steam.exe");
                             case LaunchTypes.Release:
+                                if (_operationArrowhead.InstallDirectory(launch) == null)
+                                    return null;
                                 return Path.Combine(_operationArrowhead.InstallDirectory(launch), "arma2oa.exe");
                             case LaunchTypes.Beta:
+                                if (_operationArrowhead.InstallDirectory(launch) == null)
+                                    return null;
                                 return Path.Combine(_operationArrowhead.InstallDirectory(launch), "Expansion", "beta", "arma2oa.exe");
                             default: return null;
                         }
@@ -246,8 +254,12 @@ namespace BISLib
                             case LaunchTypes.Steam:
                                 return Path.Combine(SteamDirectory, "Steam.exe");
                             case LaunchTypes.Release:
+                                if (_combinedOperations.InstallDirectory(launch) == null)
+                                    return null;
                                 return Path.Combine(_combinedOperations.InstallDirectory(launch), "arma2oa.exe");
                             case LaunchTypes.Beta:
+                                if (_combinedOperations.InstallDirectory(launch) == null)
+                                    return null;
                                 return Path.Combine(_combinedOperations.InstallDirectory(launch), "Expansion", "beta", "arma2oa.exe");
                             default: return null;
                         }
@@ -255,12 +267,7 @@ namespace BISLib
 
                     _combinedOperations.IsGamePresent = launch =>
                     {
-                        string exePath = OperationArrowhead.ExecutableFile(launch);
-                        if (exePath == null || !File.Exists(exePath))
-                            return false;
-
-                        exePath = ArmA2.ExecutableFile(launch);
-                        if (exePath == null || !File.Exists(exePath))
+                        if (!ArmA2.IsGamePresent(launch) || !OperationArrowhead.IsGamePresent(launch))
                             return false;
 
                         return true;
@@ -355,6 +362,8 @@ namespace BISLib
                             case LaunchTypes.Steam:
                                 return Path.Combine(SteamDirectory, "Steam.exe");
                             case LaunchTypes.Release:
+                                if (_tkoh.InstallDirectory(launch) == null)
+                                    return null;
                                 return Path.Combine(_tkoh.InstallDirectory(launch), "takeonh.exe");                            
                             default: return null;
                         }
@@ -451,6 +460,8 @@ namespace BISLib
                             case LaunchTypes.Steam:
                                 return Path.Combine(SteamDirectory, "Steam.exe");
                             case LaunchTypes.Release:
+                                if (_tkoh_rearmed.InstallDirectory(launch) == null)
+                                    return null;
                                 return Path.Combine(_tkoh_rearmed.InstallDirectory(launch), "takeonh.exe");
                             default: return null;
                         }
@@ -458,11 +469,10 @@ namespace BISLib
 
                     _tkoh_rearmed.IsGamePresent = launch =>
                     {
-                        string exePath = _tkoh_rearmed.ExecutableFile(launch);
-                        if (exePath == null || !File.Exists(exePath))
+                        if (!CombinedOperations.IsGamePresent(launch) || !TakeOnHelicopters.IsGamePresent(launch))
                             return false;
 
-                        return CombinedOperations.IsGamePresent(launch);
+                        return true;
                     };
 
                     _tkoh_rearmed.EquivalentLaunch = launch =>
