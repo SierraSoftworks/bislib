@@ -7,12 +7,18 @@ using System.IO;
 
 namespace BISLib
 {
+    /// <summary>
+    /// Provides methods and properties which can be assigned to
+    /// provide a launch setup for a specific game.
+    /// </summary>
     public class Game
     {
-
         #region Static Game Instances
 
         private static Game _arma2;
+        /// <summary>
+        /// ArmA 2
+        /// </summary>
         public static Game ArmA2
         {
             get
@@ -108,6 +114,9 @@ namespace BISLib
         }
 
         private static Game _operationArrowhead;
+        /// <summary>
+        /// ArmA 2 Operation Arrowhead
+        /// </summary>
         public static Game OperationArrowhead
         {
             get
@@ -206,6 +215,9 @@ namespace BISLib
         }
 
         private static Game _combinedOperations;
+        /// <summary>
+        /// ArmA 2 Combined Operations
+        /// </summary>
         public static Game CombinedOperations
         {
             get
@@ -306,17 +318,251 @@ namespace BISLib
                 return _combinedOperations;
             }
         }
+        
+        private static Game _tkoh;
+        /// <summary>
+        /// Take On Helicopters
+        /// </summary>
+        public static Game TakeOnHelicopters
+        {
+            get
+            {
+                if (_tkoh == null)
+                {
+                    _tkoh = new Game("Take On Helicopters");
+                    _tkoh.InstallDirectory = launch =>
+                    {
+                        switch (launch)
+                        {
+                            case LaunchTypes.Steam:
+                            case LaunchTypes.Beta:
+                            case LaunchTypes.Release:
+                            case LaunchTypes.Latest:
+                                return Game.TakeOnHelicoptersDirectory;
+                            default: return null;
+                        }
+                    };
 
+                    _tkoh.ExecutableFile = launch =>
+                    {
+                        switch (launch)
+                        {
+                            case LaunchTypes.Steam:
+                                return Path.Combine(SteamDirectory, "Steam.exe");
+                            case LaunchTypes.Release:
+                                return Path.Combine(_tkoh.InstallDirectory(launch), "takeonh.exe");                            
+                            default: return null;
+                        }
+                    };
 
+                    _tkoh.IsGamePresent = launch =>
+                    {
+                        string exePath = _tkoh.ExecutableFile(launch);
+                        if (exePath != null && File.Exists(exePath))
+                            return true;
+                        return false;
+                    };
+
+                    _tkoh.EquivalentLaunch = launch =>
+                    {
+                        if (launch != LaunchTypes.Latest)
+                            return launch;
+
+                        Version releaseVersion = GetAssemblyVersion(_tkoh.ExecutableFile(LaunchTypes.Release));
+                        Version betaVersion = GetAssemblyVersion(_tkoh.ExecutableFile(LaunchTypes.Beta));
+
+                        if (releaseVersion < betaVersion)
+                            return LaunchTypes.Beta;
+                        return LaunchTypes.Release;
+                    };
+
+                    _tkoh.BaseArguments = launch =>
+                    {
+                        if (launch == LaunchTypes.Steam)
+                            return "-applaunch 65730 ";
+                        return "";
+                    };
+
+                    _tkoh.BaseMods = launch =>
+                    {
+                        if (launch == LaunchTypes.Beta)
+                            return "beta";
+                        return "";
+                    };
+
+                    _tkoh.GameFolder = folder =>
+                    {
+                        switch (folder)
+                        {
+                            case "AddOns":
+                            case "DirectX":
+                            case "DLCsetup":
+                            case "dll":
+                            case "Dta":
+                            case "Hinds":
+                            case "jre":
+                            case "Keys":
+                            case "missions":
+                            case "mpmissions":
+                            case "Rearmed":
+                                return true;
+                            default: return false;
+                        }
+                    };
+                }
+
+                return _tkoh;
+            }
+        }
+
+        private static Game _tkoh_rearmed;
+        /// <summary>
+        /// Take On Helicopters: Rearmed
+        /// </summary>
+        public static Game TakeOnHelicoptersRearmed
+        {
+            get
+            {
+                if (_tkoh_rearmed == null)
+                {
+                    _tkoh_rearmed = new Game("Take On Helicopters: Rearmed");
+                    _tkoh_rearmed.InstallDirectory = launch =>
+                    {
+                        switch (launch)
+                        {
+                            case LaunchTypes.Steam:
+                            case LaunchTypes.Beta:
+                            case LaunchTypes.Release:
+                            case LaunchTypes.Latest:
+                                return Game.TakeOnHelicoptersDirectory;
+                            default: return null;
+                        }
+                    };
+
+                    _tkoh_rearmed.ExecutableFile = launch =>
+                    {
+                        switch (launch)
+                        {
+                            case LaunchTypes.Steam:
+                                return Path.Combine(SteamDirectory, "Steam.exe");
+                            case LaunchTypes.Release:
+                                return Path.Combine(_tkoh_rearmed.InstallDirectory(launch), "takeonh.exe");
+                            default: return null;
+                        }
+                    };
+
+                    _tkoh_rearmed.IsGamePresent = launch =>
+                    {
+                        string exePath = _tkoh_rearmed.ExecutableFile(launch);
+                        if (exePath != null && File.Exists(exePath))
+                            return true;
+                        return false;
+                    };
+
+                    _tkoh_rearmed.EquivalentLaunch = launch =>
+                    {
+                        if (launch != LaunchTypes.Latest)
+                            return launch;
+
+                        Version releaseVersion = GetAssemblyVersion(_tkoh_rearmed.ExecutableFile(LaunchTypes.Release));
+                        Version betaVersion = GetAssemblyVersion(_tkoh_rearmed.ExecutableFile(LaunchTypes.Beta));
+
+                        if (releaseVersion < betaVersion)
+                            return LaunchTypes.Beta;
+                        return LaunchTypes.Release;
+                    };
+
+                    _tkoh_rearmed.BaseArguments = launch =>
+                    {
+                        if (launch == LaunchTypes.Steam)
+                            return "-applaunch 65730 ";
+                        return "";
+                    };
+
+                    _tkoh_rearmed.BaseMods = launch =>
+                    {
+                        return  ArmA2Directory + ";" + 
+                                OperationArrowheadDirectory + ";" +
+                                Path.Combine(OperationArrowheadDirectory, "Expansion") + ";" +
+                                TakeOnHelicoptersDirectory + ";" +
+                                "Rearmed";
+                    };
+
+                    _tkoh_rearmed.GameFolder = folder =>
+                    {
+                        switch (folder)
+                        {
+                            case "AddOns":
+                            case "DirectX":
+                            case "DLCsetup":
+                            case "dll":
+                            case "Dta":
+                            case "Hinds":
+                            case "jre":
+                            case "Keys":
+                            case "missions":
+                            case "mpmissions":
+                            case "Rearmed":
+                            case "BattlEye":
+                            case "BEsetup":
+                            case "Common":
+                            case "Campaigns":
+                            case "Missions":
+                            case "MPMissions":
+                            case "userconfig":
+                            case "BAF":
+                            case "PMC":
+                                return true;
+                            default: return false;
+                        }
+                    };
+                }
+
+                return _tkoh_rearmed;
+            }
+        }
 
         #endregion
-
-
+        
+        /// <summary>
+        /// Creates a new instance of the <see cref="Game"/> class
+        /// for internal use
+        /// </summary>
+        /// <param name="name">
+        /// The name of the game to create an instance of
+        /// </param>
         private Game(string name)
         {
             Name = name;
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="Game"/> class
+        /// which allows BISLib to launch a particular game
+        /// </summary>
+        /// <param name="name">The name of the game</param>
+        /// <param name="isGamePresent">
+        /// A function which will determine whether or not the game is installed
+        /// </param>
+        /// <param name="installDirectory">
+        /// A function which will retreive the install directory for the game
+        /// </param>
+        /// <param name="executableFile">
+        /// A function which will retreive the path to the game's executable file
+        /// </param>
+        /// <param name="equivalentLaunch">
+        /// A function which will convert a specified launch type into an equivalent launch type
+        /// for this game.
+        /// </param>
+        /// <param name="baseArguments">
+        /// The base arguments which are applied to the game's launch parameters
+        /// </param>
+        /// <param name="baseMods">
+        /// The base mods which are applied to the game's launch parameters
+        /// </param>
+        /// <param name="isGameFolder">
+        /// A function which determines whether or not a folder is one of the game's core folders
+        /// </param>
         public Game(string name,
             Func<LaunchTypes, bool> isGamePresent,
             Func<LaunchTypes, string> installDirectory,
@@ -512,6 +758,29 @@ namespace BISLib
                     }
                 }
                 return __oaDirectory;
+            }
+        }
+
+        private static string __tkohDirectory = null;
+        private static string TakeOnHelicoptersDirectory
+        {
+            get
+            {
+                if (__tkohDirectory == null)
+                {
+                    if (File.Exists(Path.Combine(Environment.CurrentDirectory, "arma2.exe")))
+                        __tkohDirectory = Environment.CurrentDirectory;
+
+                    if (IntPtr.Size == 4 && RegistryManager.IsPresent("HKLM\\SOFTWARE\\Bohemia Interactive Studio\\Take On Helicopters"))
+                    {
+                        __tkohDirectory = RegistryManager.GetValue("HKLM\\SOFTWARE\\Bohemia Interactive Studio\\Take On Helicopters\\Main").ToString();
+                    }
+                    else if (IntPtr.Size == 8 && RegistryManager.IsPresent("HKLM\\SOFTWARE\\Wow6432Node\\Bohemia Interactive Studio\\Take On Helicopters"))
+                    {
+                        __tkohDirectory = RegistryManager.GetValue("HKLM\\SOFTWARE\\Wow6432Node\\Bohemia Interactive Studio\\Take On Helicopters\\Main").ToString();
+                    }
+                }
+                return __tkohDirectory;
             }
         }
 
