@@ -10,6 +10,8 @@
     <Description>Launches Bohemia Interactive Studio games</Description>
     <Copyright>Copyright © Benjamin Pannell 2012</Copyright>
     <OutputPath>bin\$(Configuration)\</OutputPath>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/SierraSoftworks/BISLib</RepositoryUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
