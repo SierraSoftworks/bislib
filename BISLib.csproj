@@ -2,8 +2,7 @@
   <PropertyGroup>
     <ProductVersion>8.0.30703</ProductVersion>
     <ProjectGuid>{34ED470D-644F-4E70-ABA7-367F233EC2A6}</ProjectGuid>
-    <TargetFramework>net40</TargetFramework>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
     <AssemblyTitle>BISLib</AssemblyTitle>
     <Company>Sierra Softworks</Company>
@@ -52,7 +51,6 @@
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
   </ItemGroup>
 </Project>
